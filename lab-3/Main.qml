@@ -2,11 +2,16 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
+// Окно должно быть фиксированного размера (под вопросом)
+// Размер плюсика можно менять
+// Пока все.
+
 ApplicationWindow {
     visible: true
     width: 400
     height: 400
     title: "Point Movement Example"
+    flags: Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint
 
     // Ограничения размеров окна
     property int windowWidth: width
@@ -21,7 +26,7 @@ ApplicationWindow {
     property int pointY: startPointY
 
     // Размер точки
-    property int pointSize: 20
+    property int pointSize: 100
 
     // Минимальные и максимальные границы для точки
     property int minX: pointSize / 2
@@ -44,11 +49,19 @@ ApplicationWindow {
         anchors.topMargin: 10
     }
 
+    Text {
+        text: "Лабораторная работа №3. Андрея Новиченко"
+        font.pixelSize: 16
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 30
+    }
+
     // Главный контейнер для кнопок
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 50
+        anchors.topMargin: 55
         spacing: 10
 
         // Верхняя строка с кнопкой "Вверх"
