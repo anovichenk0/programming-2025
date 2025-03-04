@@ -9,13 +9,14 @@ ApplicationWindow {
     title: "Форма подсчета"
 
     // Основной контейнер
-    ColumnLayout {
+    Column {
         anchors.fill: parent
+        anchors.margins: 10
         spacing: 10
 
         // Заголовки колонок
-        RowLayout {
-            Layout.alignment: Qt.AlignHCenter
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
             spacing: 20
 
             Text {
@@ -32,19 +33,25 @@ ApplicationWindow {
         }
 
         // Яблоки
-        RowLayout {
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
             spacing: 20
 
-            ColumnLayout {
+            Column {
+                spacing: 5
+
                 Text {
                     text: "Яблоки"
                 }
+
                 TextField {
                     id: mishaApples
+                    width: 80
                     placeholderText: "Введите количество"
                     validator: IntValidator { bottom: 0 } // Только целые числа >= 0
                     onAccepted: validateInputs() // Проверка при нажатии Enter
                 }
+
                 Text {
                     id: mishaApplesError
                     text: ""
@@ -53,16 +60,21 @@ ApplicationWindow {
                 }
             }
 
-            ColumnLayout {
+            Column {
+                spacing: 5
+
                 Text {
                     text: "Яблоки"
                 }
+
                 TextField {
                     id: sashaApples
+                    width: 80
                     placeholderText: "Введите количество"
                     validator: IntValidator { bottom: 0 } // Только целые числа >= 0
                     onAccepted: validateInputs() // Проверка при нажатии Enter
                 }
+
                 Text {
                     id: sashaApplesError
                     text: ""
@@ -73,19 +85,25 @@ ApplicationWindow {
         }
 
         // Груши
-        RowLayout {
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
             spacing: 20
 
-            ColumnLayout {
+            Column {
+                spacing: 5
+
                 Text {
                     text: "Груши"
                 }
+
                 TextField {
                     id: mishaPears
+                    width: 80
                     placeholderText: "Введите количество"
                     validator: IntValidator { bottom: 0 } // Только целые числа >= 0
                     onAccepted: validateInputs() // Проверка при нажатии Enter
                 }
+
                 Text {
                     id: mishaPearsError
                     text: ""
@@ -94,16 +112,21 @@ ApplicationWindow {
                 }
             }
 
-            ColumnLayout {
+            Column {
+                spacing: 5
+
                 Text {
                     text: "Груши"
                 }
+
                 TextField {
                     id: sashaPears
+                    width: 80
                     placeholderText: "Введите количество"
                     validator: IntValidator { bottom: 0 } // Только целые числа >= 0
                     onAccepted: validateInputs() // Проверка при нажатии Enter
                 }
+
                 Text {
                     id: sashaPearsError
                     text: ""
@@ -114,30 +137,37 @@ ApplicationWindow {
         }
 
         // Кнопки
-        RowLayout {
-            spacing: 10
+        Row {
             anchors.horizontalCenter: parent.horizontalCenter
+            spacing: 10
 
             Button {
                 text: "Счет"
+                width: 80
                 onClicked: calculateTotal()
             }
 
             Button {
                 text: "Сброс"
+                width: 80
                 onClicked: resetForm()
             }
         }
 
         // Результат
-        Text {
-            id: resultText
-            text: ""
-            visible: false
-            font.pixelSize: 14
-            color: "green"
-            horizontalAlignment: Text.AlignHCenter
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Text {
+                id: resultText
+                text: ""
+                visible: false
+                font.pixelSize: 14
+                color: "green"
+                horizontalAlignment: Text.AlignHCenter
+            }
         }
+
     }
 
     // Функция проверки ввода
@@ -148,12 +178,10 @@ ApplicationWindow {
             if (field.text === "" || parseInt(field.text) < 0) {
                 errorLabel.text = "Неверное значение";
                 errorLabel.visible = true;
-                field.border.color = "red";
                 return false;
             } else {
                 errorLabel.text = "";
                 errorLabel.visible = false;
-                field.border.color = "black";
                 return true;
             }
         }
@@ -205,11 +233,6 @@ ApplicationWindow {
         sashaApplesError.visible = false;
         mishaPearsError.visible = false;
         sashaPearsError.visible = false;
-
-        mishaApples.border.color = "black";
-        sashaApples.border.color = "black";
-        mishaPears.border.color = "black";
-        sashaPears.border.color = "black";
 
         resultText.text = "";
         resultText.visible = false;
