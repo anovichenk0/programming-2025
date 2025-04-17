@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.16)
 project(minigamequick VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Quick)
 
@@ -10,6 +12,7 @@ qt_standard_project_setup(REQUIRES 6.5)
 
 qt_add_executable(appminigamequick
     main.cpp
+    devyatki.qrc
 )
 
 qt_add_qml_module(appminigamequick
@@ -36,6 +39,8 @@ find_package(Qt6 REQUIRED COMPONENTS Core Qml Quick)
 target_link_libraries(appminigamequick
     PRIVATE Qt6::Core Qt6::Qml Qt6::Quick
 )
+
+configure_file(./puzzle.jpg ./puzzle.jpg COPYONLY)
 
 include(GNUInstallDirs)
 install(TARGETS appminigamequick
