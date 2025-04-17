@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
+
 // Окно должно быть фиксированного размера (под вопросом)
 // Размер плюсика можно менять
 // Пока все.
@@ -26,7 +27,7 @@ ApplicationWindow {
     property int pointY: startPointY
 
     // Размер точки
-    property int pointSize: 100
+    property int pointSize: 200
 
     // Минимальные и максимальные границы для точки
     property int minX: pointSize / 2
