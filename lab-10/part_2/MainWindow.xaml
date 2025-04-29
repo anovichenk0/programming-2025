@@ -1,0 +1,288 @@
+﻿<Window x:Class="lab10._2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:lab10._2"
+        mc:Ignorable="d"
+        Title="Авторизация" Height="500" Width="700"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        UseLayoutRounding="True"
+        FontFamily="Segoe UI">
+    <Window.Resources>
+        <LinearGradientBrush x:Key="AuthBackground" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#E6EEF8" Offset="0.0"/>
+            <GradientStop Color="#B0C4DE" Offset="1.0"/>
+        </LinearGradientBrush>
+        
+        <LinearGradientBrush x:Key="ChatBackground" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#F0F8FF" Offset="0.0"/>
+            <GradientStop Color="#DAEAF1" Offset="1.0"/>
+        </LinearGradientBrush>
+        
+        <Style x:Key="RoundedButton" TargetType="Button">
+            <Setter Property="Background" Value="#4682B4"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5" Background="{TemplateBinding Background}" 
+                                BorderThickness="0" Padding="2">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5A92C4"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#3A72A4"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="ClearTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+            <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+            <Setter Property="UseLayoutRounding" Value="True"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="FontSize" Value="{Binding FontSize, RelativeSource={RelativeSource Self}}"/>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <!-- Слой 1: Форма авторизации -->
+        <Grid x:Name="authorizationLayer" Visibility="Visible" Background="{StaticResource AuthBackground}"
+              TextOptions.TextFormattingMode="Display" 
+              TextOptions.TextRenderingMode="ClearType">
+            <Border CornerRadius="10" Width="300" Height="320" 
+                    Background="White" BorderBrush="#DDDDDD" BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect ShadowDepth="2" BlurRadius="10" Opacity="0.3"/>
+                </Border.Effect>
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Заголовок -->
+                        <RowDefinition Height="Auto"/> <!-- Логин лейбл -->
+                        <RowDefinition Height="Auto"/> <!-- Логин поле -->
+                        <RowDefinition Height="Auto"/> <!-- Пароль лейбл -->
+                        <RowDefinition Height="Auto"/> <!-- Пароль поле -->
+                        <RowDefinition Height="Auto"/> <!-- Кнопка -->
+                        <RowDefinition Height="50"/> <!-- Место для прогресс-бара -->
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Text="Авторизация" FontSize="24" FontWeight="SemiBold" 
+                               HorizontalAlignment="Center" Margin="0,0,0,25" Foreground="#4682B4"
+                               Style="{StaticResource ClearTextBlockStyle}"/>
+                    
+                    <TextBlock Grid.Row="1" Text="Логин:" HorizontalAlignment="Left" FontSize="14" Margin="0,0,0,5" 
+                               Foreground="#444444" Style="{StaticResource ClearTextBlockStyle}"/>
+                    <TextBox Grid.Row="2" x:Name="txtLogin" Height="32" Margin="0,0,0,15" FontSize="14" 
+                             Padding="5,5,0,0" BorderBrush="#CCCCCC"
+                             FontFamily="Segoe UI" SnapsToDevicePixels="True"
+                             TextOptions.TextFormattingMode="Display"
+                             TextOptions.TextRenderingMode="ClearType"/>
+                    
+                    <TextBlock Grid.Row="3" Text="Пароль:" HorizontalAlignment="Left" FontSize="14" Margin="0,0,0,5"
+                               Foreground="#444444" Style="{StaticResource ClearTextBlockStyle}"/>
+                    <PasswordBox Grid.Row="4" x:Name="txtPassword" Height="32" Margin="0,0,0,25" FontSize="14" 
+                                 Padding="5,5,0,0" BorderBrush="#CCCCCC" KeyDown="txtPassword_KeyDown"
+                                 FontFamily="Segoe UI"
+                                 TextOptions.TextFormattingMode="Display"
+                                 TextOptions.TextRenderingMode="ClearType"/>
+                    
+                    <Button Grid.Row="5" x:Name="btnLogin" Content="Вход" Width="120" Height="35" 
+                            Margin="0,0,0,10" Click="btnLogin_Click" Style="{StaticResource RoundedButton}"/>
+                    
+                    <Grid Grid.Row="6" x:Name="progressGrid" Visibility="Collapsed" VerticalAlignment="Top" Margin="0,10,0,0">
+                        <ProgressBar x:Name="loginProgress" Height="20" Maximum="100" Minimum="0" 
+                                     Foreground="#4682B4" Background="#F0F0F0" BorderBrush="Transparent" />
+                        <TextBlock x:Name="statusText" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                   FontSize="12" Foreground="#444444" Style="{StaticResource ClearTextBlockStyle}"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+        
+        <!-- Слой 2: Приветственное окно с чатом -->
+        <Grid x:Name="welcomeLayer" Visibility="Collapsed" Background="{StaticResource ChatBackground}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Заголовок с именем пользователя и ссылкой выхода -->
+            <Border Grid.Row="0" Background="#4682B4" Padding="10">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock x:Name="welcomeText" Text="Добро пожаловать, " 
+                               FontSize="20" FontWeight="SemiBold" Foreground="White"
+                               Style="{StaticResource ClearTextBlockStyle}"/>
+                    <TextBlock x:Name="logoutLink" Text="выход" 
+                               Foreground="#E0E0E0" Cursor="Hand" TextDecorations="Underline"
+                               FontSize="12" VerticalAlignment="Bottom" Margin="15,0,0,3"
+                               MouseLeftButtonDown="logoutLink_MouseLeftButtonDown"
+                               Style="{StaticResource ClearTextBlockStyle}"/>
+                </StackPanel>
+            </Border>
+            
+            <Grid Grid.Row="1" Margin="15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Список пользователей -->
+                <Border Grid.Column="0" Background="White" CornerRadius="5" BorderBrush="#DDDDDD" 
+                        BorderThickness="1" Padding="10" Margin="0,0,10,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Text="Список пользователей:" FontWeight="SemiBold" Margin="0,0,0,10"
+                                   Foreground="#4682B4" Style="{StaticResource ClearTextBlockStyle}"/>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+                                      PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                            <ListView x:Name="usersList" Background="Transparent" 
+                                      SelectionChanged="usersList_SelectionChanged" 
+                                      BorderThickness="0" 
+                                      ScrollViewer.CanContentScroll="True">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="Padding" Value="8,5"/>
+                                        <Setter Property="Margin" Value="0,2"/>
+                                        <Setter Property="Background" Value="#F5F9FC"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListViewItem">
+                                                    <Border Background="{TemplateBinding Background}"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                                            CornerRadius="5"
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter />
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#DAEAF1"/>
+                                                <Setter Property="BorderBrush" Value="#4682B4"/>
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#ECF5FA"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" Padding="5" Foreground="#222222"
+                                                   Style="{StaticResource ClearTextBlockStyle}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+                
+                <!-- Область чата -->
+                <Border Grid.Column="1" Background="White" CornerRadius="5" BorderBrush="#DDDDDD" 
+                        BorderThickness="1" Padding="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock x:Name="chatHeader" Text="Выберите пользователя для начала чата" 
+                                   FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#4682B4"
+                                   Style="{StaticResource ClearTextBlockStyle}"/>
+                        
+                        <Border Grid.Row="1" Background="#F7FAFC" CornerRadius="3" 
+                                BorderBrush="#EEEEEE" BorderThickness="1">
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+                                          x:Name="chatScrollViewer" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                                <ListBox x:Name="chatMessages" Background="Transparent" 
+                                         BorderThickness="0">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Margin" Value="5,3"/>
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ListBoxItem">
+                                                        <ContentPresenter />
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{Binding MessageColor}" CornerRadius="8" 
+                                                    Padding="12,8" Margin="5" MaxWidth="350"
+                                                    HorizontalAlignment="{Binding Alignment}"
+                                                    BorderThickness="1" BorderBrush="#EEEEEE">
+                                                <Border.Effect>
+                                                    <DropShadowEffect ShadowDepth="1" BlurRadius="3" Opacity="0.2"/>
+                                                </Border.Effect>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Sender}" FontWeight="SemiBold" 
+                                                              FontSize="11" Foreground="#4682B4"
+                                                              Style="{StaticResource ClearTextBlockStyle}"/>
+                                                    <TextBlock Text="{Binding Content}" TextWrapping="Wrap" 
+                                                              Margin="0,5,0,3" Foreground="#222222"
+                                                              Style="{StaticResource ClearTextBlockStyle}"/>
+                                                    <TextBlock Text="{Binding Timestamp}" FontSize="9" 
+                                                              Foreground="#666666" HorizontalAlignment="Right"
+                                                              Style="{StaticResource ClearTextBlockStyle}"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </ScrollViewer>
+                        </Border>
+                        
+                        <Grid Grid.Row="2" Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#F7FAFC" CornerRadius="5" BorderBrush="#DDDDDD" BorderThickness="1">
+                                <TextBox x:Name="txtMessage" Grid.Column="0" Height="40" 
+                                        TextWrapping="Wrap" AcceptsReturn="False" IsEnabled="False"
+                                        VerticalContentAlignment="Center" Padding="10,5" 
+                                        Background="Transparent" BorderThickness="0"
+                                        PreviewKeyDown="txtMessage_PreviewKeyDown"
+                                        FontFamily="Segoe UI" FontSize="13"/>
+                            </Border>
+                            <Button x:Name="btnSendMessage" Grid.Column="1" Content="Отправить" 
+                                   Width="90" Height="40" Margin="10,0,0,0" IsEnabled="False"
+                                   Click="btnSendMessage_Click" Style="{StaticResource RoundedButton}"/>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+            
+            <TextBlock Grid.Row="2" Text="© 2025 Чатик" HorizontalAlignment="Center" 
+                       Margin="0,5,0,10" Foreground="#666666"
+                       Style="{StaticResource ClearTextBlockStyle}"/>
+        </Grid>
+    </Grid>
+</Window>
